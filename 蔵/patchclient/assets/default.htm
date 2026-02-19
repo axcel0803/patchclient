@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patch Client</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Meiryo', 'MS Gothic', 'Yu Gothic', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .banner {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+      border-bottom: 1px solid #2a2a5a;
+      padding: 18px 24px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(255,215,0,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .banner-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffd700;
+      letter-spacing: 3px;
+      text-shadow: 0 0 20px rgba(255,215,0,0.5);
+      margin-bottom: 4px;
+    }
+
+    .banner-sub {
+      font-size: 11px;
+      color: #8b949e;
+      letter-spacing: 1px;
+    }
+
+    .banner-deco {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 48px;
+      opacity: 0.08;
+      color: #ffd700;
+      letter-spacing: -4px;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+    }
+
+    .content::-webkit-scrollbar { width: 4px; }
+    .content::-webkit-scrollbar-track { background: #0d1117; }
+    .content::-webkit-scrollbar-thumb { background: #2a2a5a; border-radius: 2px; }
+
+    .notice {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-left: 3px solid #ffd700;
+      border-radius: 4px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+    }
+
+    .notice-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-info  { background: rgba(88,166,255,0.15); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+    .badge-new   { background: rgba(63,185,80,0.15);  color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+    .badge-warn  { background: rgba(255,215,0,0.15);  color: #ffd700; border: 1px solid rgba(255,215,0,0.3); }
+
+    .notice-date {
+      font-size: 11px;
+      color: #484f58;
+      margin-left: auto;
+    }
+
+    .notice p {
+      font-size: 12px;
+      color: #8b949e;
+      line-height: 1.7;
+    }
+
+    .notice strong {
+      color: #c9d1d9;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #21262d;
+      margin: 12px 0;
+    }
+
+    .footer {
+      padding: 8px 20px;
+      border-top: 1px solid #21262d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-text {
+      font-size: 10px;
+      color: #484f58;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3fb950;
+      margin-right: 6px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="banner">
+    <div class="banner-title">Your Ragnarok Online</div>
+    <div class="banner-sub">Patch Client — Official Update Channel</div>
+    <div class="banner-deco">RO</div>
+  </div>
+
+  <div class="content">
+
+    <div class="notice">
+      <div class="notice-header">
+        <span class="badge badge-new">NEW</span>
+        <strong style="font-size:13px; color:#ffd700;">パッチクライアントへようこそ</strong>
+        <span class="notice-date">2025/01/01</span>
+      </div>
+      <p>
+        最新のパッチを自動的に確認・適用します。<br>
+        パッチが完了したら「ゲーム開始」ボタンが有効になります。
+      </p>
+    </div>
+
+    <div class="notice">
+      <div class="notice-header">
+        <span class="badge badge-info">INFO</span>
+        <strong style="font-size:12px;">サーバー情報</strong>
+        <span class="notice-date">2025/01/01</span>
+      </div>
+      <p>
+        <strong>サーバー:</strong> your-ro.com<br>
+        <strong>レート:</strong> EXP 100x / DROP 50x / JEXP 50x<br>
+        <strong>最大Lv:</strong> 175 / 60
+      </p>
+    </div>
+
+    <div class="notice">
+      <div class="notice-header">
+        <span class="badge badge-warn">NOTICE</span>
+        <strong style="font-size:12px;">ご注意</strong>
+      </div>
+      <p>
+        初回起動時はファイルの確認に時間がかかる場合があります。<br>
+        しばらくお待ちください。
+      </p>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span class="footer-text"><span class="dot"></span>サーバー稼働中</span>
+    <span class="footer-text">© Your Ragnarok Online</span>
+  </div>
+
+</body>
+</html>

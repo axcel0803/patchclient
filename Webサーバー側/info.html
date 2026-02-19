@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your RO — お知らせ</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Meiryo', 'MS Gothic', 'Yu Gothic', sans-serif;
+      font-size: 13px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── バナー ── */
+    .banner {
+      background: linear-gradient(135deg, #0a0a1e 0%, #161630 40%, #0a0a1e 100%);
+      border-bottom: 2px solid #2a2a5a;
+      padding: 14px 20px 12px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(255,215,0,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .banner-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .banner-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,215,0,0.35);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .banner-logo-placeholder {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,215,0,0.35);
+      background: #161630;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .banner-text h1 {
+      font-size: 17px;
+      font-weight: bold;
+      color: #ffd700;
+      letter-spacing: 2.5px;
+      text-shadow: 0 0 18px rgba(255,215,0,0.45);
+      line-height: 1.2;
+    }
+    .banner-text p {
+      font-size: 10px;
+      color: #6a7280;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+    .banner-status {
+      margin-left: auto;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #3fb950;
+      margin-right: 5px;
+      animation: blink 2.4s ease-in-out infinite;
+      vertical-align: middle;
+    }
+    .status-text {
+      font-size: 10px;
+      color: #3fb950;
+      vertical-align: middle;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+
+    /* ── タブ ── */
+    .tabs {
+      display: flex;
+      background: #0f0f23;
+      border-bottom: 1px solid #21262d;
+      flex-shrink: 0;
+    }
+    .tab {
+      padding: 7px 18px;
+      font-size: 11px;
+      color: #6a7280;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color .15s, border-color .15s;
+      user-select: none;
+    }
+    .tab.active {
+      color: #ffd700;
+      border-bottom-color: #ffd700;
+    }
+    .tab:hover:not(.active) {
+      color: #c9d1d9;
+    }
+
+    /* ── コンテンツ ── */
+    .panels { flex: 1; overflow: hidden; }
+    .panel {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding: 14px 18px;
+    }
+    .panel.active { display: block; }
+    .panel::-webkit-scrollbar { width: 4px; }
+    .panel::-webkit-scrollbar-track { background: #0d1117; }
+    .panel::-webkit-scrollbar-thumb { background: #2a2a5a; border-radius: 2px; }
+
+    /* ── カード ── */
+    .card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .badge {
+      font-size: 9px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+    .badge-new  { background: rgba(63,185,80,.15);  color: #3fb950; border: 1px solid rgba(63,185,80,.3); }
+    .badge-info { background: rgba(88,166,255,.15); color: #58a6ff; border: 1px solid rgba(88,166,255,.3); }
+    .badge-warn { background: rgba(255,215,0,.15);  color: #ffd700; border: 1px solid rgba(255,215,0,.3); }
+    .badge-mnt  { background: rgba(255,107,107,.15);color: #ff6b6b; border: 1px solid rgba(255,107,107,.3); }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #e6edf3;
+    }
+    .card-date {
+      font-size: 10px;
+      color: #484f58;
+      margin-left: auto;
+    }
+    .card p {
+      font-size: 12px;
+      color: #8b949e;
+      line-height: 1.75;
+    }
+    .card p strong { color: #c9d1d9; }
+
+    /* ── インフォグリッド ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .info-box {
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-left: 3px solid #ffd700;
+      border-radius: 4px;
+      padding: 10px 12px;
+    }
+    .info-box h3 {
+      font-size: 10px;
+      color: #ffd700;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .info-box p {
+      font-size: 11px;
+      color: #8b949e;
+      line-height: 1.8;
+    }
+    .info-box p strong { color: #c9d1d9; }
+
+    /* ── フッター ── */
+    .footer {
+      background: #0f0f23;
+      border-top: 1px solid #21262d;
+      padding: 6px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .footer span { font-size: 10px; color: #484f58; }
+  </style>
+</head>
+<body>
+
+  <!-- バナー -->
+  <div class="banner">
+    <div class="banner-inner">
+      <div class="banner-logo-placeholder">⚔</div>
+      <div class="banner-text">
+        <h1>Your Ragnarok Online</h1>
+        <p>Official Patch Client — Update Channel</p>
+      </div>
+      <div class="banner-status">
+        <span class="status-dot"></span>
+        <span class="status-text">SERVER ONLINE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- タブ -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('news')">お知らせ</div>
+    <div class="tab" onclick="switchTab('info')">サーバー情報</div>
+    <div class="tab" onclick="switchTab('patch')">更新履歴</div>
+  </div>
+
+  <!-- パネル：お知らせ -->
+  <div class="panels">
+    <div class="panel active" id="panel-news">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-new">NEW</span>
+          <span class="card-title">パッチクライアント v1.0 リリース</span>
+          <span class="card-date">2025/01/01</span>
+        </div>
+        <p>
+          新しいパッチクライアントを公開しました。<br>
+          自動アップデート機能により、常に最新のゲームファイルが適用されます。<br>
+          何か問題が発生した場合はサポートまでご連絡ください。
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-info">INFO</span>
+          <span class="card-title">サーバー移転のお知らせ</span>
+          <span class="card-date">2025/01/01</span>
+        </div>
+        <p>
+          サーバーを新しい環境に移転しました。<br>
+          <strong>接続先:</strong> your-server.example<br>
+          安定した接続環境をご提供できるよう努めてまいります。
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-warn">NOTICE</span>
+          <span class="card-title">ご利用にあたって</span>
+        </div>
+        <p>
+          このサーバーはプライベートサーバーです。公式とは一切関係ありません。<br>
+          ゲームクライアントの再配布・改変は禁止されています。
+        </p>
+      </div>
+
+    </div>
+
+    <!-- パネル：サーバー情報 -->
+    <div class="panel" id="panel-info">
+
+      <div class="info-grid">
+        <div class="info-box">
+          <h3>基本情報</h3>
+          <p>
+            <strong>サーバー名:</strong> Your RO<br>
+            <strong>接続先:</strong> your-server.example<br>
+            <strong>ポート:</strong> 6900
+          </p>
+        </div>
+        <div class="info-box">
+          <h3>レート</h3>
+          <p>
+            <strong>Base EXP:</strong> ???x<br>
+            <strong>Job EXP:</strong> ???x<br>
+            <strong>Drop:</strong> ???x
+          </p>
+        </div>
+        <div class="info-box">
+          <h3>上限レベル</h3>
+          <p>
+            <strong>Base Lv:</strong> ???<br>
+            <strong>Job Lv:</strong> ???<br>
+            <strong>エピソード:</strong> ???
+          </p>
+        </div>
+        <div class="info-box">
+          <h3>WoE / PvP</h3>
+          <p>
+            <strong>WoE:</strong> 毎週土曜<br>
+            <strong>PvP:</strong> 常時開放<br>
+            <strong>BG:</strong> 準備中
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:10px;">
+        <div class="card-header">
+          <span class="badge badge-info">INFO</span>
+          <span class="card-title">接続方法</span>
+        </div>
+        <p>
+          1. パッチクライアントでアップデートを完了させます。<br>
+          2.「ゲーム開始」ボタンをクリックします。<br>
+          3. ゲーム内でアカウントを作成し、ログインしてください。
+        </p>
+      </div>
+
+    </div>
+
+    <!-- パネル：更新履歴 -->
+    <div class="panel" id="panel-patch">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="badge badge-new">v1.0.0</span>
+          <span class="card-title">初回リリース</span>
+          <span class="card-date">2025/01/01</span>
+        </div>
+        <p>
+          ・サーバー公開<br>
+          ・パッチクライアント配布開始<br>
+          ・基本クエスト実装完了
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <div class="footer">
+    <span>© Your RO — All Rights Reserved</span>
+    <span id="clock"></span>
+  </div>
+
+  <script>
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('panel-' + name).classList.add('active');
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2,'0');
+      const m = String(now.getMinutes()).padStart(2,'0');
+      const s = String(now.getSeconds()).padStart(2,'0');
+      document.getElementById('clock').textContent = h + ':' + m + ':' + s;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+
+</body>
+</html>
